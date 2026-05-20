@@ -9,12 +9,18 @@ st.set_page_config(page_title="Childcare Desert GIS Model", layout="wide")
 st.title("Childcare Desert GIS Model")
 st.caption("Division fit: Assistant Commissioner: Early Childhood / Child Care Services Division")
 
-DATA_PATH = "data/sample_data.csv"
+import os
+
+DATA_PATH_OPTIONS = ["sample_data.csv", "data/sample_data.csv"]
 
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)
+    for path in DATA_PATH_OPTIONS:
+        if os.path.exists(path):
+            return pd.read_csv(path)
 
+    st.error("No sample_data.csv found. Please upload sample_data.csv to the root folder or data folder.")
+    return pd.DataFrame()
 
 def norm(series, reverse=False):
     s = pd.to_numeric(series, errors="coerce")
